@@ -37,7 +37,16 @@ export default function Home() {
       });
 
       const json = await response.json();
-      setResult(json); // Update the state with the PHP response
+      if (typeof json === "object" && json !== null) {
+        setResult([
+          `${json.fullName1} and ${json.fullName2} are`,
+          `${json.flamesResult} and ${json.zodiacCompatibility}`,
+          `${json.birthdate1} - ${json.zodiacSign1} - ${json.symbol1}`,
+          `${json.birthdate2} - ${json.zodiacSign2} - ${json.symbol2}`,
+        ]);
+      } else {
+        setResult(["Invalid response received."]);
+      }
       form.reset(); //resets form after results are shown
     } catch (error) {
       console.error("Error submitting the form:", error);
@@ -58,20 +67,20 @@ export default function Home() {
           <form className="gap-6" action="http://localhost:8080/form-handler.php" method="post" onSubmit={handleSubmit}>
           <CardContent className="p-6 grid grid-cols-2 gap-6">
             <div className="gap-2 flex flex-col">
-                <Label htmlFor="Your Name" className="text-sm font-medium text-gray-700">Your Name:</Label>
-                <Input placeholder="Enter your name" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="name1" name="name1"/>
+                <Label htmlFor="Your Name" className="text-sm font-medium text-gray-700">Your First Name:</Label>
+                <Input placeholder="Enter your name" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="firstName1" name="firstName1"/>
+                <Label htmlFor="Your Name" className="text-sm font-medium text-gray-700">Your Last Name:</Label>
+                <Input placeholder="Enter your name" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="lastName1" name="lastName1"/>
                 <Label htmlFor="Your Birthdate" className="text-sm font-medium text-gray-700">Your Birthdate:</Label>
                 <Input placeholder="Enter your birthdate" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="birthdate1" name="birthdate1"/>
-                <Label htmlFor="Your Zodiac Sign" className="text-sm font-medium text-gray-700">Your Zodiac Sign:</Label>
-                <Input placeholder="Enter your zodiac sign" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="zodiacSign1" name="zodiacSign1"/>
             </div>
             <div className="gap-2 flex flex-col">
-              <Label htmlFor="Your Lover's Name" className="text-sm font-medium text-gray-700">Your Lover's Name:</Label>
-              <Input placeholder="Enter your lover's name" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="name2" name="name2"/>
+              <Label htmlFor="Your Lover's Name" className="text-sm font-medium text-gray-700">Your Lover's First Name:</Label>
+              <Input placeholder="Enter your lover's name" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="firstName2" name="firstName2"/>
+              <Label htmlFor="Your Lover's Name" className="text-sm font-medium text-gray-700">Your Lover's Last Name:</Label>
+              <Input placeholder="Enter your lover's name" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="lastName2" name="lastName2"/>
               <Label htmlFor="Your Lover's Birthdate" className="text-sm font-medium text-gray-700">Your Lover's Birthdate:</Label>
               <Input placeholder="Enter your lover's birthdate" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="birthdate2" name="birthdate2"/>
-              <Label htmlFor="Your Lover's Zodiac Sign" className="text-sm font-medium text-gray-700">Your Lover's Zodiac Sign:</Label>
-              <Input placeholder="Enter your lover's zodiac sign" className="w-full px-4 py-2 rounded-md border-pink-300 focus:border-pink-500 focus:ring focus:ring-pink-200" type="text" id="zodiacSign2" name="zodiacSign2"/>
             </div>
           </CardContent>
             <CardFooter> 
@@ -83,7 +92,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-center mb-1 text-purple-800">Your Result:</h2>
             {Array.isArray(result) ? (
               result.map((item: string, index: number) => (
-                  <p key={index} className={clsx("text-md font-bold text-center", index === 0 && "text-3xl text-pink-600 font-extrabold", index >= 1 && index <= 6 && "text-pink-400" )}>{item}</p>
+                  <p key={index} className={clsx("text-md font-bold text-center", index === 0 && "text-pink-400", index === 1 && "text-3xl text-pink-600 font-extrabold", index >= 2 && index <= 6 && "text-pink-400" )}>{item}</p>
               ))
               ) : (
                 <p className="text-md font-extrabold text-center text-pink-600">{result}</p>
